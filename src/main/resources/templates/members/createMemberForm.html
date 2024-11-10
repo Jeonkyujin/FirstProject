@@ -17,10 +17,13 @@
       <div class="login-content__box">
         <h2>회원가입</h2>
         <p>사용자 정보를 입력해주세요.</p>
-        <form role="form" action="/members/new" th:object="${memberForm}" method="post" class="join-form__box">
+        <form role="form" action="/members/new" th:object="${memberForm}" method="post" class="join-form__box" onsubmit="return validateForm()">
           <div class="form-label__box">
             <label th:for="login_id">아이디</label>
             <input type="text" size=14 th:field="*{login_id}" placeholder="아이디를 입력하세요" class="input-style">
+            <button type="button" onclick="checkDuplicate()">중복 확인</button>
+            <input type="hidden" id="duplicateChecked" value="false">
+            <input type="hidden" id="checkedLoginId" value="">
           </div>
           <div class="form-label__box">
             <label th:for="password">비밀번호</label>
@@ -104,6 +107,69 @@
       </div>
     </div>
   </div>
+  <!-- 자바스크립트 추가 -->
+  <script>
+    // 중복 확인 함수
+    function checkDuplicate() {
+      const loginIdInput = document.getElementById("login_id").value;
+      if (!loginIdInput.trim()) {
+        alert("아이디를 입력해주세요.");
+        return;
+      }
+
+      fetch(`/api/members/check-duplicate?login_id=` + loginIdInput)
+        .then(response => response.text())
+        .then(data => {
+          if (data === "duplicate") {
+            alert("중복된 아이디입니다.");
+            document.getElementById("duplicateChecked").value = "false";
+          } else {
+            alert("사용 가능한 아이디입니다.");
+            document.getElementById("duplicateChecked").value = "true";
+            document.getElementById("checkedLoginId").value = loginIdInput;
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // 유효성 검사 함수 추가
+    function validateForm() {
+      // 중복 확인 여부 검사
+      const duplicateChecked = document.getElementById("duplicateChecked").value;
+      const loginIdInput = document.getElementById("login_id").value;
+      const checkedLoginId = document.getElementById("checkedLoginId").value;
+
+      if (duplicateChecked !== "true" || loginIdInput !== checkedLoginId) {
+        alert("아이디 중복 확인을 해주세요.");
+        return false;
+      }
+
+      // 필수 항목 검사
+      const requiredFields = ["login_id", "password", "amount"];
+      for (const fieldId of requiredFields) {
+        const field = document.getElementById(fieldId);
+        if (!field || field.value.trim() === "") {
+          alert("모든 필수 항목을 입력해주세요.");
+          field.focus();
+          return false;
+        }
+      }
+
+      // 체크박스 검사
+      const sexChecked = document.querySelectorAll('input[name="sex"]:checked').length > 0;
+      const ageChecked = document.querySelectorAll('input[name="age"]:checked').length > 0;
+      const statusChecked = document.querySelectorAll('input[name="status"]:checked').length > 0;
+
+      if (!sexChecked || !ageChecked || !statusChecked) {
+        alert("모든 질문에 답변해주세요.");
+        return false;
+      }
+
+      return true;
+    }
+  </script>
 </body>
+
+</html>
 
 </html>

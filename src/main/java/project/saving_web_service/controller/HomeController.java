@@ -68,14 +68,34 @@ public class HomeController {
         String login_id = (String) session.getAttribute("login_id");
         Member member = memberService.findMember(login_id);
 
-        member.setPassword(updatedMember.getPassword());
-        member.setStatus(updatedMember.getStatus());
-        member.setPreferredCondition(updatedMember.getPreferredCondition());
-        member.setAmount(updatedMember.getAmount());
-        member.setPeriod(updatedMember.getPeriod());
-        member.setImportant(updatedMember.getImportant());
-        member.setAge(updatedMember.getAge());
-        member.setSex(updatedMember.getSex());
+        // 빈 값이나 null 값이 아닌 필드만 업데이트
+        if (updatedMember.getPassword() != null && !updatedMember.getPassword().isEmpty()) {
+            member.setPassword(updatedMember.getPassword());
+        }
+        if (updatedMember.getStatus() != null && !updatedMember.getStatus().isEmpty()) {
+            member.setStatus(updatedMember.getStatus());
+        }
+        if (updatedMember.getPreferredCondition() != null && !updatedMember.getPreferredCondition().isEmpty()) {
+            member.setPreferredCondition(updatedMember.getPreferredCondition());
+        }
+        if (updatedMember.getAmount() != null && !updatedMember.getAmount().isEmpty()) {
+            member.setAmount(updatedMember.getAmount());
+        }
+        if (updatedMember.getPeriod() != null && !updatedMember.getPeriod().isEmpty()) {
+            member.setPeriod(updatedMember.getPeriod());
+        }
+        if (updatedMember.getImportant() != null && !updatedMember.getImportant().isEmpty()) {
+            member.setImportant(updatedMember.getImportant());
+        }
+        if (updatedMember.getSex() != null && !updatedMember.getSex().isEmpty()) {
+            member.setSex(updatedMember.getSex());
+        }
+        if (updatedMember.getAge() != null && !updatedMember.getAge().isEmpty()) {
+            member.setAge(updatedMember.getAge());
+        }
+        if (updatedMember.getPurpose() != null && !updatedMember.getPurpose().isEmpty()) {
+            member.setPurpose(updatedMember.getPurpose());
+        }
 
 
         memberService.join(member);

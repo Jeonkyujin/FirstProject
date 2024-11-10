@@ -32,6 +32,9 @@ public class MemberService {
             existingMember.setAmount(member.getAmount());
             existingMember.setPeriod(member.getPeriod());
             existingMember.setImportant(member.getImportant());
+            existingMember.setSex(member.getSex());
+            existingMember.setAge(member.getAge());
+            existingMember.setPurpose(member.getPurpose());
 
             memberRepository.save(existingMember); // 업데이트된 엔티티 저장
         } else {
@@ -41,6 +44,10 @@ public class MemberService {
 
     public Member findbyId(Long id){
         return memberRepository.findByRealId(id);
+    }
+
+    public boolean isDuplicateLoginId(String login_id) {
+        return memberRepository.findById(login_id) != null;
     }
 
 }
